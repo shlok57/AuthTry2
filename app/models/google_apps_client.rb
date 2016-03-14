@@ -4,7 +4,7 @@ class GoogleAppsClient
   end
 
   def self.client( identity )
-    client = Google::APIClient.new(:application_name => 'HappySeed App', :application_version => "1.0.0" )
+    client = Google::APIClient.new(:application_name => 'AuthTry', :application_version => "1.0.0" )
     client.authorization.update_token!({:access_token => identity.accesstoken, :refresh_token => identity.refreshtoken})
     GoogleAppsClient.new( client )
   end
@@ -13,13 +13,13 @@ class GoogleAppsClient
     @admin_api ||= @client.discovered_api("admin", "directory_v1")
   end
 
-  def list_users( domain = "happyfuncorp.com" )
+  def list_users( domain = "localhost:3000" )
     request = { api_method: admin_api.users.list }
     request[:parameters] = { domain: domain }
     @client.execute request
   end
 
-  def is_valid_user?( email, domain = "happyfuncorp.com" )
+  def is_valid_user?( email, domain = "localhost:3000" )
     users = list_users( domain )
     users.data['users'].each do |user|
       if user['primaryEmail'].downcase == email.downcase
@@ -48,7 +48,7 @@ class GoogleAppsClient
     end
   end
 
-  def list_groups( domain = "happyfuncorp.com" )
+  def list_groups( domain = "localhost:3000" )
     request = { api_method: admin_api.groups.list }
     request[:parameters] = { domain: domain }
     @client.execute request
